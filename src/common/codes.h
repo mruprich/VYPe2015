@@ -45,10 +45,13 @@
 #define LEX_NEQ				128
 #define LEX_AND				129
 #define LEX_OR				130
+#define LEX_LBRACES		131
+#define LEX_RBRACES		132
 
 //other
 #define	LEX_SEMICOL		200
 #define LEX_EOL				201
+#define LEX_MAIN			202
 
 /*
  * Return codes

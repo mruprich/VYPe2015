@@ -21,45 +21,48 @@ EOL_CHAR \'\\n\'
 %option c++
 
 %%
-">="			{printf("OPER >=\n"); return LEX_GTOE;}
-"<="			{printf("OPER <=\n"); return LEX_LSOE;}
-">"				{printf("OPER >\n"); return LEX_GT;}
-"<"				{printf("OPER <\n"); return LEX_LS;}
-"!"				{printf("OPER !\n"); return LEX_NEG;}
-"*"				{printf("MULT\n"); return LEX_MULT;}
-"/"				{printf("DIVISION\n"); return LEX_DIV;}
-"%"				{printf("MOD\n"); return LEX_MOD;}
-"+"				{printf("PLUS\n"); return LEX_ADD;}
-"-"				{printf("MINUS\n"); return LEX_SUB;}
-"("				{printf("LEFT BRACKET\n"); return LEX_LBR;}
-")"				{printf("RIGHT BRACKET\n"); return LEX_RBR;}
-"=="			{printf("OPER ==\n"); return LEX_EQ;}
-"!="			{printf("OPER !=\n"); return LEX_NEQ;}
-"&&"			{printf("AND\n"); return LEX_AND;}
-"||"			{printf("OR\n"); return LEX_OR;}
+">="			{printf("OPER >= "); return LEX_GTOE;}
+"<="			{printf("OPER <= "); return LEX_LSOE;}
+">"				{printf("OPER > "); return LEX_GT;}
+"<"				{printf("OPER < "); return LEX_LS;}
+"!"				{printf("OPER ! "); return LEX_NEG;}
+"*"				{printf("MULT "); return LEX_MULT;}
+"/"				{printf("DIVISION "); return LEX_DIV;}
+"%"				{printf("MOD "); return LEX_MOD;}
+"+"				{printf("PLUS "); return LEX_ADD;}
+"-"				{printf("MINUS "); return LEX_SUB;}
+"("				{printf("LEFT_BRACKET "); return LEX_LBR;}
+")"				{printf("RIGHT_BRACKET "); return LEX_RBR;}
+"=="			{printf("OPER == "); return LEX_EQ;}
+"!="			{printf("OPER != "); return LEX_NEQ;}
+"&&"			{printf("AND "); return LEX_AND;}
+"||"			{printf("OR "); return LEX_OR;}
+"{"				{printf("LEFT_BRACES "); return LEX_LBRACES;}
+"}"				{printf("RIGHT_BRACES "); return LEX_LBRACES;}
 
-";"				{printf("SEMICOLON\n"); return LEX_SEMICOL;}
+";"				{printf("SEMICOLON "); return LEX_SEMICOL;}
 
-if				{printf("IF\n"); return LEX_IF;}
-else			{printf("ELSE\n"); return LEX_ELSE;}
-while			{printf("WHILE\n"); return LEX_WHILE;}
-for				{printf("FOR\n"); return LEX_FOR;}
-break			{printf("BREAK\n"); return LEX_BREAK;}
-continue	{printf("CONTINUE\n"); return LEX_CONT;}
-char			{printf("CHAR\n"); return LEX_DATA_TYPE;}
-string		{printf("STRING\n"); return LEX_DATA_TYPE;}
-int				{printf("INT\n"); return LEX_DATA_TYPE;}
-return		{printf("RET\n"); return LEX_RET;}
-void			{printf("VOID\n"); return LEX_VOID;}
-unsigned	{printf("UNSIGNED\n"); return LEX_UNSIGNED;}
-short			{printf("SHORT\n"); return LEX_SHORT;}
-{STR}			{printf("STRING: %s\n", yytext); return LEX_STR;}
-{NMR}			{printf("NUMBER: %d\n", atol(yytext)); return LEX_NMR;}
-{CHAR}		{printf("CHAR: %c\n", (char)yytext[1]); return LEX_CHAR;}
-{EOL_CHAR}	{printf("EOL_CHAR: \\n\n"); return LEX_CHAR;}
-{VAR}			{printf("VAR ID: %s\n", yytext); return LEX_VAR;}
+main			{printf("MAIN "); return LEX_MAIN;}
+if				{printf("IF "); return LEX_IF;}
+else			{printf("ELSE "); return LEX_ELSE;}
+while			{printf("WHILE "); return LEX_WHILE;}
+for				{printf("FOR "); return LEX_FOR;}
+break			{printf("BREAK "); return LEX_BREAK;}
+continue	{printf("CONTINUE "); return LEX_CONT;}
+char			{printf("CHAR "); return LEX_DATA_TYPE;}
+string		{printf("STRING "); return LEX_DATA_TYPE;}
+int				{printf("INT "); return LEX_DATA_TYPE;}
+return		{printf("RET "); return LEX_RET;}
+void			{printf("VOID "); return LEX_VOID;}
+unsigned	{printf("UNSIGNED "); return LEX_UNSIGNED;}
+short			{printf("SHORT "); return LEX_SHORT;}
+{STR}			{printf("STRING ", yytext); return LEX_STR;}
+{NMR}			{printf("NUMBER ", atol(yytext)); return LEX_NMR;}
+{CHAR}		{printf("CHAR ", (char)yytext[1]); return LEX_CHAR;}
+{EOL_CHAR}	{printf("EOL_CHAR "); return LEX_CHAR;}
+{VAR}			{printf("VAR_ID ", yytext); return LEX_VAR;}
 
-\n				{return LEX_EOL;}
+\n				{printf("\n"); return LEX_EOL;}
 
 "/*"			{
 						register int multiline_comment = 1;
