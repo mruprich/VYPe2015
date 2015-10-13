@@ -5,6 +5,7 @@
  * Constants defining return codes for lexical analysis
  */
 //data types
+#define LEX_DATA_TYPE	99
 #define LEX_CHAR 			100
 #define LEX_INT				101
 #define LEX_STR				102
