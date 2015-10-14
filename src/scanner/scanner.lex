@@ -11,69 +11,74 @@ EOL_CHAR \'\\n\'
  * Martin Vymlatil, Michal Ruprich
  * */
 
-#include <stdio.h>
+#include <cstdio>
 #include "../src/common/codes.h"
-#include "../src/common/tokens.h"
+using namespace std;
 
-//extern int yylex(void);
+#include "parser.tab.h"
+extern "C" int yylex();
+int yyerror(char *s);
 %}
 
 %option c++
 
 %%
-">="			{printf("OPER >= "); return LEX_GTOE;}
-"<="			{printf("OPER <= "); return LEX_LSOE;}
-">"				{printf("OPER > "); return LEX_GT;}
-"<"				{printf("OPER < "); return LEX_LS;}
-"!"				{printf("OPER ! "); return LEX_NEG;}
-"*"				{printf("MULT "); return LEX_MULT;}
-"/"				{printf("DIVISION "); return LEX_DIV;}
-"%"				{printf("MOD "); return LEX_MOD;}
-"+"				{printf("PLUS "); return LEX_ADD;}
-"-"				{printf("MINUS "); return LEX_SUB;}
-"("				{printf("LEFT_BRACKET "); return LEX_LBR;}
-")"				{printf("RIGHT_BRACKET "); return LEX_RBR;}
-"=="			{printf("OPER == "); return LEX_EQ;}
-"!="			{printf("OPER != "); return LEX_NEQ;}
-"&&"			{printf("AND "); return LEX_AND;}
-"||"			{printf("OR "); return LEX_OR;}
-"{"				{printf("LEFT_BRACES "); return LEX_LBRACES;}
-"}"				{printf("RIGHT_BRACES "); return LEX_LBRACES;}
+">="			{return GTOE;}
+"<="			{return LSOE;}
+">"				{return GT;}
+"<"				{return LS;}
+"!"				{return NEG;}
+"*"				{return MULT;}
+"/"				{return DIV;}
+"%"				{return MOD;}
+"+"				{return ADD;}
+"-"				{return SUB;}
+"("				{return LBR;}
+")"				{return RBR;}
+"=="			{return EQ;}
+"!="			{return NEQ;}
+"&&"			{return AND;}
+"||"			{return OR;}
 
-";"				{printf("SEMICOLON "); return LEX_SEMICOL;}
+"="			{return ASSIGN;}
+"{"			{return BEGIN_TOK;}
+"}"			{return END_TOK;}
+";"				{return SEMICOL;}
 
-main			{printf("MAIN "); return LEX_MAIN;}
-if				{printf("IF "); return LEX_IF;}
-else			{printf("ELSE "); return LEX_ELSE;}
-while			{printf("WHILE "); return LEX_WHILE;}
-for				{printf("FOR "); return LEX_FOR;}
-break			{printf("BREAK "); return LEX_BREAK;}
-continue	{printf("CONTINUE "); return LEX_CONT;}
-char			{printf("CHAR "); return LEX_DATA_TYPE;}
-string		{printf("STRING "); return LEX_DATA_TYPE;}
-int				{printf("INT "); return LEX_DATA_TYPE;}
-return		{printf("RET "); return LEX_RET;}
-void			{printf("VOID "); return LEX_VOID;}
-unsigned	{printf("UNSIGNED "); return LEX_UNSIGNED;}
-short			{printf("SHORT "); return LEX_SHORT;}
-{STR}			{printf("STRING ", yytext); return LEX_STR;}
-{NMR}			{printf("NUMBER ", atol(yytext)); return LEX_NMR;}
-{CHAR}		{printf("CHAR ", (char)yytext[1]); return LEX_CHAR;}
-{EOL_CHAR}	{printf("EOL_CHAR "); return LEX_CHAR;}
-{VAR}			{printf("VAR_ID ", yytext); return LEX_VAR;}
+if				{return IF;}
+else			{return ELSE;}
+while			{return WHILE;}
+for				{return FOR;}
+break			{return BREAK;}
+continue	{return CONT;}
+char			{return CHAR;}
+string		{return STR;}
+int				{return INT;}
+return		{return RET;}
+main		{return MAIN;}
+void			{return VOID;}
+unsigned	{return UNSIGNED;}
+short			{return SHORT;}
+{STR}			{return STR;}
+{NMR}			{yylval.int_val = atol(yytext); return NMR;}
+{CHAR}		{return CHAR;}
+{EOL_CHAR}	{return CHAR;}
+{VAR}			{yylval.op_val = strdup(yytext); return VAR;}
 
-\n				{printf("\n"); return LEX_EOL;}
+
+\n				{return EOL;}
 
 "/*"			{
-						register int multiline_comment = 1;
-						register char c;
+						int multiline_comment = 1;
+						char c;
 						do
 						{
 							while((c=yyinput()) != '*')
 							{
 								if(c==EOF) 
 								{
-									printf("Source code error: Unterminated comment block\n"); 
+								printf("Source code error: Unterminated comment block\n"); 
+								 
 									return LEXICAL_ERR;
 								}
 							}
@@ -89,11 +94,11 @@ short			{printf("SHORT "); return LEX_SHORT;}
 						while((c=yyinput()) != '\n');
 					}
 %%
-int main()
+/*int main()
 {
 	FlexLexer* lexer = new yyFlexLexer();
 	while(lexer->yylex() != 0)
 		;
 
 	return CAJK;
-}
+}*/
