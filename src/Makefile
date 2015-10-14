@@ -18,10 +18,10 @@ parser.o:	parser.tab.c
 		$(CC) $(CFLAGS) -c parser.tab.c -o parser.o	
 
 parser.tab.c:	parser/parser.y
-		bison -d -v parser/parser.y
+		bison -d -v parser/parser.y -o parser.tab.c
 		
 scanner.o:	lex.yy.c
-		$(CC) $(CLFAGS) -c lex.yy.c -o scanner.o
+		$(CC) $(CLFAGS) -c lex.yy.cc -o scanner.o
 
 lex.yy.c:	scanner/scanner.lex
 		flex scanner/scanner.lex	
@@ -30,5 +30,5 @@ main.o:		main.cpp
 		$(CC) $(CFLAGS) -c main.cpp -o main.o
 
 clean:
-	rm -f *.o lex.yy.c *.tab.* *.output $(PROJ)
+	rm -f *.o lex.yy.cc *.tab.* parser.h *.output $(PROJ)
 

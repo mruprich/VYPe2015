@@ -12,10 +12,12 @@ EOL_CHAR \'\\n\'
  * */
 
 #include <cstdio>
+#include <string.h>
 #include "../src/common/codes.h"
+
 using namespace std;
 
-#include "parser.tab.h"
+#include "parser.h"
 extern "C" int yylex();
 int yyerror(char *s);
 %}

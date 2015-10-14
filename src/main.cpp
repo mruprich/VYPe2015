@@ -2,7 +2,7 @@
 
 using namespace std;
 
-extern "C" int yyparse();
+int yyparse();
 
 int main (int argc, char **argv) 
 {

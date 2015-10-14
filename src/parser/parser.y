@@ -8,11 +8,12 @@
 %{
 #include <cstdio>
 #include <iostream>
+
 using namespace std;
 
 int yyerror(const char *s);
 extern "C" int yylex();
-extern "C" int yyparse();
+int yyparse();
 %}
 
 %union{
@@ -105,7 +106,7 @@ int yyerror(string s)
 //	cerr << "ERROR: " << s << at symbol \"" << yytext;
 //	cerr << "\" on line " << yylineno << endl;
 	cerr << "ERROR ... " << endl;
-	exit(1);
+	return 1;
 }
 
 int yyerror(const char *s)
