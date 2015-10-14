@@ -1,0 +1,34 @@
+# Makefile, VYPe 2015
+# Martin Vymlatil, Michal Ruprich
+# xvymla01, xrupri00
+
+PROJ 	= compiler
+OBJS 	= parser.o scanner.o main.o
+
+CC	= g++
+CFLAGS	= -g -Wall -pedantic					
+
+#all:
+#		$(MAKE) -C ../build
+
+$(PROJ):	$(OBJS)		
+		$(CC) $(CFLAGS) $(OBJS) -o $(PROJ) -lfl	
+
+parser.o:	parser.tab.c
+		$(CC) $(CFLAGS) -c parser.tab.c -o parser.o	
+
+parser.tab.c:	parser/parser.y
+		bison -d -v parser/parser.y
+		
+scanner.o:	lex.yy.c
+		$(CC) $(CLFAGS) -c lex.yy.c -o scanner.o
+
+lex.yy.c:	scanner/scanner.lex
+		flex scanner/scanner.lex	
+
+main.o:		main.cpp
+		$(CC) $(CFLAGS) -c main.cpp -o main.o
+
+clean:
+	rm -f *.o lex.yy.c *.tab.* *.output $(PROJ)
+
