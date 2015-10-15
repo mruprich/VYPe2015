@@ -12,7 +12,7 @@ CFLAGS	= -g -Wall -pedantic
 #		$(MAKE) -C ../build
 
 $(PROJ):	$(OBJS)		
-		$(CC) $(CFLAGS) $(OBJS) -o $(PROJ) -lfl	
+		$(CC) $(CFLAGS) $(OBJS) -o $(PROJ) 
 
 parser.o:	parser.tab.cc
 		$(CC) $(CFLAGS) -c parser.tab.cc -o parser.o	
