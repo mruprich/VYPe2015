@@ -12,7 +12,7 @@
 using namespace std;
 
 int yyerror(const char *s);
-extern "C" int yylex();
+extern "C" {int yylex();}
 int yyparse();
 %}
 
@@ -112,4 +112,9 @@ int yyerror(string s)
 int yyerror(const char *s)
 {
 	return yyerror(string(s));
+}
+
+int yylex()
+{
+	return 1;
 }

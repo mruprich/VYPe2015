@@ -17,8 +17,8 @@ EOL_CHAR \'\\n\'
 
 using namespace std;
 
-#include "parser.h"
-extern "C" int yylex();
+#include "parser.tab.hh"
+extern int yylex();
 int yyerror(char *s);
 %}
 
