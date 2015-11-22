@@ -6,29 +6,25 @@ PROJ 	= compiler
 OBJS 	= parser.o scanner.o main.o
 
 CC	= g++
-CFLAGS	= -g -Wall -pedantic					
+CFLAGS	= -std=c++11 -g -pedantic
 
 #all:
 #		$(MAKE) -C ../build
 
-$(PROJ):	$(OBJS)		
-		$(CC) $(CFLAGS) $(OBJS) -o $(PROJ) 
+#all: lex.yy.c cpp_all
+all: parser.tab.c lex.yy.c cpp_all
 
-parser.o:	parser.tab.cc
-		$(CC) $(CFLAGS) -c parser.tab.cc -o parser.o	
-
-parser.tab.cc:	parser/parser.y
-		bison -d -v parser/parser.y -o parser.tab.cc
-		
-scanner.o:	lex.yy.c
-		$(CC) $(CLFAGS) -c lex.yy.cc -o scanner.o
+parser.tab.c:	parser/parser.y
+		bison -d -v parser/parser.y -o parser.tab.c
 
 lex.yy.c:	scanner/scanner.lex
-		flex --noyywrap scanner/scanner.lex	
+		flex  --noyywrap scanner/scanner.lex	
 
-main.o:		main.cpp
-		$(CC) $(CFLAGS) -c main.cpp -o main.o
+cpp_all:
+#		$(CC) $(CFLAGS) lex.yy.c -o scan
+		$(CC) $(CFLAGS) parser.tab.c lex.yy.c -o $(PROJ) 
+		
 
 clean:
-	rm -f *.o lex.yy.cc *.tab.* *.output $(PROJ)
+	rm -f *.o lex.yy.c *.tab.* *.output $(PROJ)
 

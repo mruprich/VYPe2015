@@ -11,64 +11,62 @@ EOL_CHAR \'\\n\'
  * Martin Vymlatil, Michal Ruprich
  * */
 
-#include <cstdio>
+#include <stdio.h>
 #include <string.h>
-#include "../src/common/codes.h"
+#include "common/codes.h"
 
-using namespace std;
-
-#include "parser.tab.hh"
-extern int yylex();
-int yyerror(char *s);
+//extern int yyFlexLexer::yylex();
+#define YY_DECL extern int yylex()
+#include "parser.tab.h"
+//int yyerror(char *s);
 %}
 
-%option c++
-
 %%
-">="			{return GTOE;}
-"<="			{return LSOE;}
-">"				{return GT;}
-"<"				{return LS;}
-"!"				{return NEG;}
-"*"				{return MULT;}
-"/"				{return DIV;}
-"%"				{return MOD;}
-"+"				{return ADD;}
-"-"				{return SUB;}
-"("				{return LBR;}
-")"				{return RBR;}
-"=="			{return EQ;}
-"!="			{return NEQ;}
-"&&"			{return AND;}
-"||"			{return OR;}
 
-"="			{return ASSIGN;}
-"{"			{return BEGIN_TOK;}
-"}"			{return END_TOK;}
-";"				{return SEMICOL;}
+">="			{printf(">= "); return GTOE;}
+"<="			{printf("<= "); return LSOE;}
+">"				{printf("> "); return GT;}
+"<"				{printf("< "); return LS;}
+"!"				{printf("! "); return NEG;}
+"*"				{printf("* "); return MULT;}
+"/"				{printf("/ "); return DIV;}
+"%"				{printf("% "); return MOD;}
+"+"				{printf("+ "); return ADD;}
+"-"				{printf("- "); return SUB;}
+"("				{printf("( "); return LBR;}
+")"				{printf(") "); return RBR;}
+"=="			{printf("== "); return EQ;}
+"!="			{printf("!= "); return NEQ;}
+"&&"			{printf("&& "); return AND;}
+"||"			{printf("|| "); return OR;}
 
-if				{return IF;}
-else			{return ELSE;}
-while			{return WHILE;}
-for				{return FOR;}
-break			{return BREAK;}
-continue	{return CONT;}
-char			{return CHAR;}
-string		{return STR;}
-int				{return INT;}
-return		{return RET;}
-main		{return MAIN;}
-void			{return VOID;}
-unsigned	{return UNSIGNED;}
-short			{return SHORT;}
-{STR}			{return STR;}
-{NMR}			{yylval.int_val = atol(yytext); return NMR;}
-{CHAR}		{return CHAR;}
-{EOL_CHAR}	{return CHAR;}
-{VAR}			{yylval.op_val = strdup(yytext); return VAR;}
+"="			{printf("= "); return ASSIGN;}
+"{"			{printf("{ "); return BEGIN_TOK;}
+"}"			{printf("} "); return END_TOK;}
+";"				{printf("; "); return SEMICOL;}
+
+if				{printf("IF "); return IF;}
+else			{printf("ELSE "); return ELSE;}
+while			{printf("WHILE "); return WHILE;}
+for				{printf("FOR "); return FOR;}
+break			{printf("BREAK "); return BREAK;}
+continue	{printf("CONTINUE "); return CONT;}
+char			{printf("CHAR "); CHAR;}
+string		{printf("STRING "); return STR;}
+int				{printf("INT "); return INT;}
+return		{printf("RETURN "); return RET;}
+main		{printf("MAIN "); return MAIN;}
+void			{printf("VOID "); return VOID;}
+unsigned	{printf("UNSIGNED "); return UNSIGNED;}
+short			{printf("SHORT "); return SHORT;}
+{STR}			{printf("STR "); return STR;}
+{NMR}			{printf("NMR:%d ", atol(yytext));  /*yylval.int_val = atol(yytext);*/ return NMR;}
+{CHAR}		{printf("CHAR "); return CHAR;}
+{EOL_CHAR}	{printf("EOL\n"); return EOL;}
+{VAR}			{printf("VAR:%s",yytext); /*yylval.op_val = strdup(yytext);*/ return VAR;}
 
 
-\n				{return EOL;}
+\n				{printf("\n");}
 
 "/*"			{
 						int multiline_comment = 1;
@@ -79,7 +77,7 @@ short			{return SHORT;}
 							{
 								if(c==EOF) 
 								{
-								printf("Source code error: Unterminated comment block\n"); 
+								fprintf(stderr, "Source code error: Unterminated comment block\n"); 
 								 
 									return LEXICAL_ERR;
 								}
@@ -96,11 +94,8 @@ short			{return SHORT;}
 						while((c=yyinput()) != '\n');
 					}
 %%
-/*int main()
+/*int main(int, char **)
 {
-	FlexLexer* lexer = new yyFlexLexer();
-	while(lexer->yylex() != 0)
-		;
-
-	return CAJK;
+	yylex();
+	return 100;
 }*/

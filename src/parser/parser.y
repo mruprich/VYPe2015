@@ -6,14 +6,10 @@
  * */
 
 %{
-#include <cstdio>
-#include <iostream>
-
-using namespace std;
-
-int yyerror(const char *s);
-extern "C" {int yylex();}
-int yyparse();
+#include <stdio.h>
+extern int yylex();
+extern void yyerror(const char* str);
+extern FILE *yyin;
 %}
 
 %union{
@@ -23,62 +19,81 @@ int yyparse();
 
 %start	program
 
+%token EOL 
+
 %token CHAR INT STR VOID SHORT UNSIGNED
+%token LBR RBR
 %token FOR WHILE
 %token IF ELSE
 %token RET MAIN BREAK CONT
-%token BEGIN_TOK END_TOK ASSIGN SEMICOL EOL
+%token BEGIN_TOK END_TOK ASSIGN SEMICOL
 %token	<int_val> 	NMR
 %token 	<op_val> 	VAR
 %type	<int_val>	exp
 %left	OR
-%left 	AND
+%left AND
 %left	EQ NEQ
 %left	LS GT LSOE GTOE	
 %left	ADD SUB
 %left	MULT DIV MOD
-%left 	NEG
-%left 	LBR RBR
+%left NEG
+%left LBR RBR
 
 %%
 /*zaciname - zde muze byt deklarace nasledovana definici nebo main*/
-program: 	declarations
-		| main
+program: /*deklarace nebo main*/	
+		declarations main | main
 ;
 
-types:		CHAR | INT | STR | VOID
+main: 		
+		INT MAIN LBR VOID RBR block
 ;
 
-pars_dec:	types | types ',' |
+declarations:	
+	/*eps*/
+	| declaration declarations
 ;
 
-declarations:	declarations declaration | declaration
+declaration:	/* typ ID (seznam_typu_par) - pak muze nasledovat bud strednik, nebo primo definice*/ 
+		types VAR LBR pars_dec RBR SEMICOL decl_cont 
 ;
 
-declaration:	/* typ ID (seznam_typu_par) */ 
-		types VAR LBR pars_dec RBR SEMICOL |
-		types VAR LBR pars_dec RBR SEMICOL  definitions
+decl_cont:
+	SEMICOL | block
 ;
 
-block:		BEGIN_TOK statements  END_TOK
-
-definitions:	definitions definition | definition
-
-definition:	/* typ ID (seznam_par) {statement} */
-		types VAR LBR types VAR RBR block |
-		types VAR LBR types VAR RBR block main
+types:		
+	CHAR | INT | STR | VOID
 ;
 
-main: 		INT MAIN LBR VOID RBR block 
+pars_dec:	
+	/*eps*/ |types | types ','
 ;
 
-statements:	statements statement | statement	
+block:		
+	BEGIN_TOK statements  END_TOK
 ;
 
-statement:	assigment |
-		while |
-		ifelse |
-		call	
+
+statements:	
+		/*eps*/
+		| statement statements
+;
+
+statement:	
+	var_def |
+	assigment |
+	while |
+	ifelse |
+	call 
+;
+
+var_def:
+	types VAR | var_def_cont
+;
+
+var_def_cont:
+	SEMICOL | VAR var_def_cont
 ;
 
 assigment:	VAR ASSIGN exp
@@ -93,28 +108,39 @@ ifelse:		IF
 call:		RET
 ;
 
-exp:		NMR	{cout << "bison found an int: " << $1 << endl; }
-		| VAR  {cout << "bison found a varialbe: " << $1 << endl; }
+exp:		NMR	{printf("bison found an int: %d\n", $1); }
+		| VAR  {printf("bison found a variable: %d\n",$1); }
 ;
 %%
 
-int yyerror(string s) 
-{
-	extern int yylineno;
-	extern char *yytext;
+//int yyerror(string s) 
+//{
+//	extern int yylineno;
+//	extern char *yytext;
 
 //	cerr << "ERROR: " << s << at symbol \"" << yytext;
 //	cerr << "\" on line " << yylineno << endl;
-	cerr << "ERROR ... " << endl;
-	return 1;
+//	cerr << "ERROR ... " << s << endl;
+//	return 1;
+//}
+
+int main(int argc, char **argv)
+{
+	printf("main je spusten\n");
+	FILE *fp = fopen(argv[1], "r");
+	if(fp == NULL)
+	{
+		printf("Unable to open file %s\n", argv[1]);
+		return 0;
+	}
+	
+	yyin = fp;
+	int ret = yyparse();
+	printf("main konci, ret = %d\n", ret);
 }
 
-int yyerror(const char *s)
+void yyerror(const char *s)
 {
-	return yyerror(string(s));
+	fprintf(stderr, "error v bisonu: %s\n", s);
 }
 
-int yylex()
-{
-	return 1;
-}
